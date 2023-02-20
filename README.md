@@ -2,6 +2,7 @@
 
 A lightweight library for splitting polygons into regions based on proximity of points.\
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+![issues](https://img.shields.io/github/issues/r1p71d3/polysplit)
 
 ## Overview
 Map quantization is the procedure of dividing a continuous map into a number of discrete regions. The simplest approach that has been used for hundreds of years is to overlap the map with a square grid. However, this approach ignores the geographical features of the map, making it suboptimal for certain applications. With this project, I would like to propose a novel algorithm that organically divides any given map into regions based on the relative travel time between different areas.
