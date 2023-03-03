@@ -3,3 +3,4 @@ venv/
 htmlcov/
 __pycache__/
 .gitignore
+.coverage
