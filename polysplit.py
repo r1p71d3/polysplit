@@ -1,6 +1,7 @@
 """
-This module contains the function polysplit, which splits a plygon into regions using k-medoids clustering
-and a distance metric based on the shortest distance between two points within the polygon.
+This module contains the function polysplit, which splits a plygon into regions using k-medoids
+clustering and a distance metric based on the shortest distance between two points within the
+polygon.
 """
 
 from shapely.geometry import Polygon, Point, MultiPoint
@@ -12,8 +13,8 @@ import matplotlib.pyplot as plt
 
 
 def polysplit(polygon: Polygon, k: int = 2, num_points: int = 1000, plot=False) -> list:
-    """Split a polygon into k regions using k-medoids clustering and a distance metric based on the shortest distance
-    between two points within the polygon.
+    """Split a polygon into k regions using k-medoids clustering and a distance metric based
+    on the shortest distance between two points within the polygon.
 
     Parameters
     ----------
@@ -44,7 +45,7 @@ def polysplit(polygon: Polygon, k: int = 2, num_points: int = 1000, plot=False) 
     # Cluster the points using K-medoids
     # TODO: dynamically consider only the points withing a certain radius around the centroid
     # TODO: then use the shortest path algo to prune far away points
-    kmedoids = KMedoids(n_clusters=k, metric='precomputed').fit(distances)
+    kmedoids = KMedoids(n_clusters=k, metric="precomputed").fit(distances)
 
     # Get the cluster labels for each point
     labels = kmedoids.labels_
@@ -89,14 +90,18 @@ def generate_points_within_polygon(polygon: Polygon, num_points: int) -> np.ndar
 
     # add the remainder of the points at random
     while len(points) < num_points:
-        point = Point([np.random.uniform(min_x, max_x), np.random.uniform(min_y, max_y)])
+        point = Point(
+            [np.random.uniform(min_x, max_x), np.random.uniform(min_y, max_y)]
+        )
         if polygon.contains(point):
             points.append(point)
 
     return np.array(points)
 
 
-def get_regions(polygon: Polygon, points: np.ndarray, labels: np.ndarray, k: int) -> list:
+def get_regions(
+    polygon: Polygon, points: np.ndarray, labels: np.ndarray, k: int
+) -> list:
     """Get the regions from the points and labels using Voronoi diagram on centroids.
 
     Parameters
@@ -140,7 +145,7 @@ def get_regions(polygon: Polygon, points: np.ndarray, labels: np.ndarray, k: int
     return regions
 
 
-def shortest_path_distance(point1: Point, point2: Point) -> float:
+def shortest_path_distance(point1: tuple, point2: tuple) -> float:
     """Calculate the shortest path distance between two points.
 
     Parameters
@@ -160,7 +165,7 @@ def shortest_path_distance(point1: Point, point2: Point) -> float:
     x2, y2 = point2
     # Calculate the distance
     # TODO: use the shortest path algorithm instead
-    distance = np.sqrt((x1 - x2)**2 + (y1 - y2)**2)
+    distance = np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
     return distance
 
 
@@ -200,6 +205,8 @@ def shapely_point_to_tuple(point: Point) -> tuple:
 
 
 def main():
+    """Main method for testing."""
+
     # Create a polygon
     polygon = Polygon([(0, 0), (0, 1), (1, 1), (1, 0)])
     # Split the polygon
@@ -209,5 +216,5 @@ def main():
     print(regions)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
