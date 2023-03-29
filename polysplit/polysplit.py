@@ -12,7 +12,7 @@ from sklearn.metrics import pairwise_distances
 import matplotlib.pyplot as plt
 
 
-def polysplit(polygon: Polygon, k: int = 2, num_points: int = 1000, plot=False) -> list:
+def polysplit_main(polygon: Polygon, k: int = 2, num_points: int = 1000, plot=False) -> list:
     """Split a polygon into k regions using k-medoids clustering and a distance metric based
     on the shortest distance between two points within the polygon.
 
@@ -90,18 +90,14 @@ def generate_points_within_polygon(polygon: Polygon, num_points: int) -> np.ndar
 
     # add the remainder of the points at random
     while len(points) < num_points:
-        point = Point(
-            [np.random.uniform(min_x, max_x), np.random.uniform(min_y, max_y)]
-        )
+        point = Point([np.random.uniform(min_x, max_x), np.random.uniform(min_y, max_y)])
         if polygon.contains(point):
             points.append(point)
 
     return np.array(points)
 
 
-def get_regions(
-    polygon: Polygon, points: np.ndarray, labels: np.ndarray, k: int
-) -> list:
+def get_regions(polygon: Polygon, points: np.ndarray, labels: np.ndarray, k: int) -> list:
     """Get the regions from the points and labels using Voronoi diagram on centroids.
 
     Parameters
@@ -212,7 +208,7 @@ def main():
     # Split the polygon
     # TODO: test on a large number of points and regions
     # TODO: test on a polygon with holes
-    regions = polysplit(polygon, k=5, num_points=20, plot=True)
+    regions = polysplit_main(polygon, k=5, num_points=20, plot=True)
     print(regions)
 
 
