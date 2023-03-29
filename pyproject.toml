@@ -50,7 +50,9 @@ develop = [
     "wheel",
     "matplotlib",
     "shapely",
-    "numpy"
+    "numpy",
+    "sklearn",
+    "sklearn_extra"
 ]
 
 [tool.black]
