@@ -48,6 +48,10 @@ develop = [
     "pytest-cov>=2.6.1",
     "twine",
     "wheel",
+    "matplotlib",
+    "shapely",
+    "unittest",
+    "numpy"
 ]
 
 [tool.black]
