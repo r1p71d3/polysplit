@@ -12,7 +12,7 @@ from sklearn.metrics import pairwise_distances
 import matplotlib.pyplot as plt
 
 
-def polysplit(polygon: Polygon, k: int = 2, num_points: int = 1000, plot=False) -> list:
+def polysplit_main(polygon: Polygon, k: int = 2, num_points: int = 1000, plot=False) -> list:
     """Split a polygon into k regions using k-medoids clustering and a distance metric based
     on the shortest distance between two points within the polygon.
 
@@ -212,7 +212,7 @@ def main():
     # Split the polygon
     # TODO: test on a large number of points and regions
     # TODO: test on a polygon with holes
-    regions = polysplit(polygon, k=5, num_points=20, plot=True)
+    regions = polysplit_main(polygon, k=5, num_points=20, plot=True)
     print(regions)
 
 
