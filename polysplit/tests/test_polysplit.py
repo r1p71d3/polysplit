@@ -38,6 +38,7 @@ class TestPolySplit(unittest.TestCase):
             self.assertTrue(self.polygon.contains(region))
 
     def test_point_to_tuple(self):
+        # test point to tuple
         point = Point(1, 2)
         expected_tuple = (1.0, 2.0)
         self.assertEqual(ps.shapely_point_to_tuple(point), expected_tuple)
