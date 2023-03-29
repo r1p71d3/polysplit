@@ -4,6 +4,7 @@ A lightweight library for splitting polygons into regions based on proximity of 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 ![issues](https://img.shields.io/github/issues/r1p71d3/polysplit)
 [![codecov](https://codecov.io/gh/r1p71d3/polysplit/branch/main/graph/badge.svg?token=8S2VJLZG7U)](https://codecov.io/gh/r1p71d3/polysplit)
+[![Build Status](https://github.com/r1p71d3/polysplit/actions/workflows/build.yml/badge.svg)](https://github.com/r1p71d3/polysplit/actions/workflows/build.yml)
 
 
 ## Overview
