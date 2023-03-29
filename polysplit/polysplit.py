@@ -90,18 +90,14 @@ def generate_points_within_polygon(polygon: Polygon, num_points: int) -> np.ndar
 
     # add the remainder of the points at random
     while len(points) < num_points:
-        point = Point(
-            [np.random.uniform(min_x, max_x), np.random.uniform(min_y, max_y)]
-        )
+        point = Point([np.random.uniform(min_x, max_x), np.random.uniform(min_y, max_y)])
         if polygon.contains(point):
             points.append(point)
 
     return np.array(points)
 
 
-def get_regions(
-    polygon: Polygon, points: np.ndarray, labels: np.ndarray, k: int
-) -> list:
+def get_regions(polygon: Polygon, points: np.ndarray, labels: np.ndarray, k: int) -> list:
     """Get the regions from the points and labels using Voronoi diagram on centroids.
 
     Parameters
