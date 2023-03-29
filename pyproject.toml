@@ -50,7 +50,6 @@ develop = [
     "wheel",
     "matplotlib",
     "shapely",
-    "unittest",
     "numpy"
 ]
 
