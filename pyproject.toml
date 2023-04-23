@@ -52,7 +52,9 @@ develop = [
     "shapely",
     "numpy",
     "scikit-learn>=1.2.1",
-    "scikit-learn-extra>=0.2.0"
+    "scikit-learn-extra>=0.2.0",
+    "itertools",
+    "networkx"
 ]
 
 [tool.black]
