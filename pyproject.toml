@@ -5,7 +5,6 @@ requires = [
     "wheel",
 ]
 build-backend="setuptools.build_meta"
-package_dir = {'' = 'polysplit'}
 
 [project]
 name = "polysplit"
