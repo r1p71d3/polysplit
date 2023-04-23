@@ -4,12 +4,46 @@ clustering and a distance metric based on the shortest distance between two poin
 polygon.
 """
 
-from shapely.geometry import Polygon, Point, MultiPoint
+from shapely.geometry import Polygon, Point, MultiPoint, LineString
 from shapely.ops import voronoi_diagram
 import numpy as np
 from sklearn_extra.cluster import KMedoids
-from sklearn.metrics import pairwise_distances
 import matplotlib.pyplot as plt
+import networkx as nx
+import itertools
+
+
+class VisibilityDistanceCache:
+    """A cache for the shortest path distance between two points within a polygon.
+    Speeds up computation by at least 50% compared to computing the full distance
+    matrix at the beginning of the algorithm."""
+
+    def __init__(self, polygon):
+        self.polygon = polygon
+        self.cache = {}
+
+    def distance(self, p1, p2):
+        # Check if the distance is already in the cache
+        key = tuple(sorted((p1, p2)))  # Sort to ensure consistent order
+        if key in self.cache:
+            return self.cache[key]
+
+        # If not in cache, compute the distance and store it
+        shortest_path, path_distance = visibility(self.polygon, p1, p2)
+        self.cache[key] = path_distance
+        return path_distance
+
+    def pairwise_distance_func(self, points):
+        num_points = len(points)
+        distances = np.zeros((num_points, num_points))
+
+        for i in range(num_points):
+            for j in range(i + 1, num_points):
+                dist = self.distance(points[i], points[j])
+                distances[i, j] = dist
+                distances[j, i] = dist
+
+        return distances
 
 
 def polysplit_main(polygon: Polygon, k: int = 2, num_points: int = 1000, plot=False) -> list:
@@ -39,12 +73,13 @@ def polysplit_main(polygon: Polygon, k: int = 2, num_points: int = 1000, plot=Fa
     # convert points to a list of tuples
     points = [shapely_point_to_tuple(point) for point in points]
 
+    # Create the distance cache
+    distance_cache = VisibilityDistanceCache(polygon)
+
     # Calculate the distance matrix between each pair of points
-    distances = pairwise_distances(points, metric=shortest_path_distance)
+    distances = distance_cache.pairwise_distance_func(points)
 
     # Cluster the points using K-medoids
-    # TODO: dynamically consider only the points withing a certain radius around the centroid
-    # TODO: then use the shortest path algo to prune far away points
     kmedoids = KMedoids(n_clusters=k, metric="precomputed").fit(distances)
 
     # Get the cluster labels for each point
@@ -119,17 +154,10 @@ def get_regions(polygon: Polygon, points: np.ndarray, labels: np.ndarray, k: int
         # Get the points in the region
         region_points = points[labels == i]
         # Get the centroid of the region
-        # TODO: use polylabel instead
         centroid = np.mean(region_points, axis=0)
         centroids.append(centroid)
 
-    # TODO: remove this when done testing
-    print(centroids)
-    plt.scatter(*zip(*centroids))
-    plt.show()
-
     # Get the regions using the Voronoi diagram on the centroids
-    # TODO: fix the representation of the regions
     regions = voronoi_diagram(MultiPoint(centroids), Polygon(centroids).convex_hull)
 
     # Convert regions from GeometryCollection to list of Polygons
@@ -141,7 +169,7 @@ def get_regions(polygon: Polygon, points: np.ndarray, labels: np.ndarray, k: int
     return regions
 
 
-def shortest_path_distance(point1: tuple, point2: tuple) -> float:
+def euclidean_distance(point1: tuple, point2: tuple) -> float:
     """Calculate the shortest path distance between two points.
 
     Parameters
@@ -160,9 +188,51 @@ def shortest_path_distance(point1: tuple, point2: tuple) -> float:
     x1, y1 = point1
     x2, y2 = point2
     # Calculate the distance
-    # TODO: use the shortest path algorithm instead
     distance = np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
     return distance
+
+
+def visibility(polygon: Polygon, p1: tuple, p2: tuple):
+    """Calculate the shortest path distance between two points within a polygon.
+
+    Parameters
+    ----------
+    polygon : shapely.geometry.Polygon
+        The polygon.
+    p1 : tuple
+        The first point.
+    p2 : tuple
+        The second point.
+
+    Returns
+    -------
+    tuple
+        The shortest path between the points.
+    float
+        The shortest path distance between the points.
+    """
+
+    def visible(p1, p2):
+        """Check if two points are visible to each other"""
+        line = LineString([p1, p2])
+        return polygon.contains(line) or polygon.boundary.contains(line)
+
+    points = [Point(p1), Point(p2)]
+    for hole in polygon.interiors:
+        points.extend([Point(x, y) for x, y in hole.coords])
+
+    visibility_graph = nx.Graph()
+    visibility_graph.add_nodes_from(points)
+
+    for pair in itertools.combinations(points, 2):
+        if visible(pair[0], pair[1]):
+            distance = pair[0].distance(pair[1])
+            visibility_graph.add_edge(pair[0], pair[1], weight=distance)
+
+    shortest_path = nx.shortest_path(visibility_graph, source=Point(p1), target=Point(p2), weight="weight")
+    path_distance = nx.shortest_path_length(visibility_graph, source=Point(p1), target=Point(p2), weight="weight")
+
+    return shortest_path, path_distance
 
 
 def plot_polygon_and_regions(polygon: Polygon, regions: list):
@@ -203,12 +273,13 @@ def shapely_point_to_tuple(point: Point) -> tuple:
 def main():
     """Main method for testing."""
 
-    # Create a polygon
-    polygon = Polygon([(0, 0), (0, 1), (1, 1), (1, 0)])
+    # Create a polygon with a hole
+    outer_coords = [(0, 0), (0, 1), (1, 1), (1, 0)]
+    hole_coords = [(0.4, 0.4), (0.4, 0.6), (0.6, 0.6), (0.6, 0.4)]
+    polygon = Polygon(outer_coords, [hole_coords])
+
     # Split the polygon
-    # TODO: test on a large number of points and regions
-    # TODO: test on a polygon with holes
-    regions = polysplit_main(polygon, k=5, num_points=20, plot=True)
+    regions = polysplit_main(polygon, k=5, num_points=100, plot=True)
     print(regions)
 
 

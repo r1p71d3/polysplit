@@ -24,7 +24,17 @@ class TestPolySplit(unittest.TestCase):
         point1 = (0.0, 0.0)
         point2 = (1.0, 1.0)
         expected_result = 1.41421356  # square root of 2
-        result = ps.shortest_path_distance(point1, point2)
+        result = ps.euclidean_distance(point1, point2)
+        self.assertAlmostEqual(result, expected_result, places=5)
+
+    def test_visibility(self):
+        outer_coords = [(0, 0), (0, 1), (1, 1), (1, 0)]
+        hole_coords = [(0.4, 0.4), (0.4, 0.6), (0.6, 0.6), (0.6, 0.4)]
+        polygon = Polygon(outer_coords, [hole_coords])
+        p1 = (0.0, 0.0)
+        p2 = (1.0, 1.0)
+        expected_result = 1.44222051
+        result = ps.visibility(polygon, p1, p2)[1]
         self.assertAlmostEqual(result, expected_result, places=5)
 
     def test_polysplit(self):
@@ -38,6 +48,7 @@ class TestPolySplit(unittest.TestCase):
             self.assertTrue(self.polygon.contains(region))
 
     def test_point_to_tuple(self):
+        # test point to tuple
         point = Point(1, 2)
         expected_tuple = (1.0, 2.0)
         self.assertEqual(ps.shapely_point_to_tuple(point), expected_tuple)
