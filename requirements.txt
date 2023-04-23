@@ -1,0 +1,17 @@
+black>=22
+bump2version>=1.0.0
+check-manifest
+flake8>=3.7.8
+flake8-black>=0.2.1
+flake8-pyproject
+mypy
+pytest>=4.3.0
+pytest-cov>=2.6.1
+twine
+wheel
+matplotlib
+shapely
+numpy
+scikit-learn>=1.2.1
+scikit-learn-extra>=0.2.0
+networkx

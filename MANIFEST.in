@@ -1,2 +1,3 @@
 include *.md
 include Makefile
+include *.txt
