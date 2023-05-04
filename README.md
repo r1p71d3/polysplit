@@ -5,6 +5,7 @@ A lightweight library for splitting polygons into regions based on proximity of 
 ![issues](https://img.shields.io/github/issues/r1p71d3/polysplit)
 [![codecov](https://codecov.io/gh/r1p71d3/polysplit/branch/main/graph/badge.svg?token=8S2VJLZG7U)](https://codecov.io/gh/r1p71d3/polysplit)
 [![Build Status](https://github.com/r1p71d3/polysplit/actions/workflows/build.yml/badge.svg)](https://github.com/r1p71d3/polysplit/actions/workflows/build.yml)
+[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://r1p71d3.github.io/polysplit/)
 
 
 ## Overview
@@ -31,3 +32,6 @@ polygon = Polygon(outer_coords, [hole_coords])
 regions = polysplit.polysplit_main(polygon, k=5, num_points=100, plot=True)
 print(regions)
 ```
+
+## Documentation
+You can find the most up-to-date documentation [here](https://r1p71d3.github.io/polysplit/).
