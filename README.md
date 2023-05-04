@@ -32,3 +32,6 @@ polygon = Polygon(outer_coords, [hole_coords])
 regions = polysplit.polysplit_main(polygon, k=5, num_points=100, plot=True)
 print(regions)
 ```
+
+## Documentation
+You can find the most up-to-date documentation [here](https://r1p71d3.github.io/polysplit/).
